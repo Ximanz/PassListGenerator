@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -32,11 +33,10 @@ namespace PassListGenerator
 
             for (var totalElements = _minimum; totalElements <= _maximum; totalElements++)
             {
-                for (var element = 1; element <= totalElements; element++)
-                {
-                    
-                }
+                results.AddRange(GeneratePhrasePermutations(totalElements));
             }
+
+            System.IO.File.WriteAllLines("output.txt", results.ToArray());
         }
 
         private int CalculateTotalPermutations()
@@ -48,20 +48,36 @@ namespace PassListGenerator
 
         private List<string> GeneratePhrasePermutations(int length)
         {
-            var results = new List<string>();
-
-            results = PermutatePhrase(_inputElements, 1, length);
-
-            return results;
+            return PermutatePhrase(GenerateWordPermutations(), 1, length).ToList();
         }
 
-        private List<string> PermutatePhrase(List<string> source, int size, int length)
+        private IEnumerable<string> PermutatePhrase(IEnumerable<string> list, int size, int length)
         {
-            var results = new List<string>();
+            var enumerable = list as IList<string> ?? list.ToList();
 
+            for (var index = 0; index < enumerable.Count(); index++)
+            {
+                if (size == length) yield return enumerable[index];
 
+                var reducedList = new List<string>(enumerable);
+                reducedList.RemoveAt(index);
+                foreach (var element in PermutatePhrase(reducedList, size + 1, length))
+                {
+                    yield return string.Concat(enumerable[index], element);
+                }
+            }
+        }
 
-            return results;
+        private List<string> GenerateWordPermutations()
+        {
+            if (!_substitute && !_changeCase) return _inputElements;
+
+            var expandedWordList = new List<string>(_inputElements);
+
+            if (_substitute) expandedWordList.GenerateNumericSubstitutes();
+            if (_changeCase) expandedWordList.GenerateCaseSubstitutes();
+
+            return expandedWordList;
         }
     }
 }
