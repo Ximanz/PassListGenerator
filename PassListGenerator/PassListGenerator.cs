@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security;
 using System.Text;
 using System.Threading.Tasks;
+using PassListGenerator.CharacterVariants;
 
 namespace PassListGenerator
 {
@@ -46,36 +47,39 @@ namespace PassListGenerator
             return result;
         }
 
-        private List<string> GeneratePhrasePermutations(int length)
+        private List<string> GeneratePhrasePermutations(int wordsToUse)
         {
-            return PermutatePhrase(GenerateWordPermutations(), 1, length).ToList();
+            return PermutatePhrase(GenerateWordVariations(), wordsToUse).ToList();
         }
 
-        private IEnumerable<string> PermutatePhrase(IEnumerable<string> list, int size, int length)
+        private IEnumerable<string> PermutatePhrase(IEnumerable<string> list, int wordsToUse)
         {
             var enumerable = list as IList<string> ?? list.ToList();
 
             for (var index = 0; index < enumerable.Count(); index++)
             {
-                if (size == length) yield return enumerable[index];
+                if (wordsToUse == 1) yield return enumerable[index];
 
                 var reducedList = new List<string>(enumerable);
                 reducedList.RemoveAt(index);
-                foreach (var element in PermutatePhrase(reducedList, size + 1, length))
+                foreach (var element in PermutatePhrase(reducedList, wordsToUse - 1))
                 {
                     yield return string.Concat(enumerable[index], element);
                 }
             }
         }
 
-        private List<string> GenerateWordPermutations()
+        private List<string> GenerateWordVariations()
         {
-            if (!_substitute && !_changeCase) return _inputElements;
-
             var expandedWordList = new List<string>(_inputElements);
+            if (!_substitute && !_changeCase) return expandedWordList;
 
-            if (_substitute) expandedWordList.GenerateNumericSubstitutes();
-            if (_changeCase) expandedWordList.GenerateCaseSubstitutes();
+            var characterModifiers = new List<ICharacterVariation>();
+
+            if (_substitute) characterModifiers.Add(new CharacterSymbolVariation());
+            if (_changeCase) characterModifiers.Add(new CharacterCaseVariation());
+
+            expandedWordList.GenerateWordSubstitutes(characterModifiers);
 
             return expandedWordList;
         }

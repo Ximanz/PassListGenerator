@@ -32,13 +32,8 @@ namespace PassListGenerator
                 }
 
 
-                if (options.Verbose)
-                {
-                    Console.WriteLine(options.InputFile);
-                    Console.WriteLine(options.MaximumLength);
-                }
-                else
-                    Console.WriteLine("working ...");
+                var generator = new PassListGenerator(inputElements, options);
+                generator.GeneratePasswordList();
             }
         }
 

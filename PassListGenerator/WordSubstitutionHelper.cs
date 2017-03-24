@@ -3,18 +3,24 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using PassListGenerator.CharacterVariants;
+using PassListGenerator.WordVariants;
 
 namespace PassListGenerator
 {
-    static class WordSubstitutionHelper
+    public static class WordSubstitutionHelper
     {
-        public static void GenerateNumericSubstitutes(this List<string> source)
+        public static void GenerateWordSubstitutes(this List<string> wordList, List<ICharacterVariation> characterModifiers)
         {
+            var expandedList = new List<string>();
 
-        }
-        public static void GenerateCaseSubstitutes(this List<string> source)
-        {
+            foreach (var word in wordList)
+            {
+                expandedList.AddRange(WordVariation.GenerateWordVariations(word, characterModifiers));
+            }
 
+            wordList.Clear();
+            wordList.AddRange(expandedList);
         }
     }
 }
