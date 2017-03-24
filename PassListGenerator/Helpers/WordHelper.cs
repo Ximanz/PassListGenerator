@@ -1,18 +1,15 @@
-﻿using System;
+﻿using PassListGenerator.CharacterModifier;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using PassListGenerator.CharacterVariants;
 
-namespace PassListGenerator.WordVariants
+namespace PassListGenerator.Helpers
 {
-    public static class WordVariation
+    public static class WordHelper
     {
         public static IEnumerable<string> GenerateWordVariations(string word, List<ICharacterVariation> characterModifiers)
         {
             var character = word.First();
-            var characterVariants = new List<char>();
+            var characterVariants = new List<char> { character };
             characterModifiers.ForEach(mod => characterVariants.AddRange(mod.GenerateCharacterVariations(character)));
 
             foreach (var characterVariant in characterVariants)
@@ -26,6 +23,22 @@ namespace PassListGenerator.WordVariants
                     }
                 }
             }
+        }
+
+        public static int WordVariationsCount(string word, List<ICharacterVariation> characterModifiers)
+        {
+            var counts = new List<int>();
+            foreach (var character in word)
+            {
+                var count = 1;
+                foreach (var modifier in characterModifiers)
+                {
+                    count += modifier.CharacterVariationCount(character);
+                }
+                counts.Add(count);
+            }
+
+            return counts.Aggregate((a, b) => a * b);
         }
     }
 }

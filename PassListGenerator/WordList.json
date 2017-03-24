@@ -1,0 +1,6 @@
+{
+	"Correct": { "SymbolVariation": true, "CaseVariation":  true},
+	"Horse": { "SymbolVariation": false, "CaseVariation":  false},
+	"Battery": { "SymbolVariation": true, "CaseVariation":  false},
+	"Staple": { "SymbolVariation": false, "CaseVariation":  true}
+}

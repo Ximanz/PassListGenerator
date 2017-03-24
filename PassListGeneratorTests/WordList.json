@@ -1,0 +1,4 @@
+{
+	"Correct": { "SymbolVariation": false, "CaseVariation":  true},
+	"Staple": { "SymbolVariation": true, "CaseVariation":  false}
+}
