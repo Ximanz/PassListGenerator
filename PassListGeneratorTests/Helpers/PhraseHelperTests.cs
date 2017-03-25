@@ -24,7 +24,7 @@ namespace PassListGeneratorTests.Helpers
         {
             var wordCollection = new List<List<string>>() { Data.Group1, Data.Group2, Data.Group3, Data.Group4 };
 
-            var results = PhraseHelper.PermutatePhrase(wordCollection, 1);
+            var results = PhraseHelper.PermutatePhrase(wordCollection, 1, new List<int>());
 
             Assert.IsNotNull(results);
             Assert.AreEqual(13, results.Count());
@@ -35,7 +35,7 @@ namespace PassListGeneratorTests.Helpers
         {
             var wordCollection = new List<List<string>>() { Data.Group1, Data.Group2, Data.Group3, Data.Group4 };
 
-            var results = PhraseHelper.PermutatePhrase(wordCollection, 2);
+            var results = PhraseHelper.PermutatePhrase(wordCollection, 2, new List<int>());
 
             Assert.IsNotNull(results);
             Assert.AreEqual(126, results.Count());
@@ -46,7 +46,7 @@ namespace PassListGeneratorTests.Helpers
         {
             var wordCollection = new List<List<string>>() { Data.Group1, Data.Group2, Data.Group3, Data.Group4 };
 
-            var results = PhraseHelper.PermutatePhrase(wordCollection, 3);
+            var results = PhraseHelper.PermutatePhrase(wordCollection, 3, new List<int>());
 
             Assert.IsNotNull(results);
             Assert.AreEqual(810, results.Count());
@@ -57,7 +57,7 @@ namespace PassListGeneratorTests.Helpers
         {
             var wordCollection = new List<List<string>>() { Data.Group1 };
 
-            var results = PhraseHelper.PermutatePhrase(wordCollection, 1);
+            var results = PhraseHelper.PermutatePhrase(wordCollection, 1, new List<int>());
 
             Assert.IsNotNull(results);
             Assert.AreEqual(3, results.Count());
@@ -68,7 +68,7 @@ namespace PassListGeneratorTests.Helpers
         {
             var wordCollection = new List<List<string>>() { Data.Group1 };
 
-            var results = PhraseHelper.PermutatePhrase(wordCollection, 2);
+            var results = PhraseHelper.PermutatePhrase(wordCollection, 2, new List<int>());
 
             Assert.IsNotNull(results);
             Assert.AreEqual(3, results.Count());
@@ -79,7 +79,7 @@ namespace PassListGeneratorTests.Helpers
         {
             var wordCollection = new List<List<string>>() { Data.Group1 };
 
-            var results = PhraseHelper.PermutatePhrase(wordCollection, 3);
+            var results = PhraseHelper.PermutatePhrase(wordCollection, 3, new List<int>());
 
             Assert.IsNotNull(results);
             Assert.AreEqual(3, results.Count());

@@ -1,31 +1,32 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace PassListGenerator.Helpers
 {
     public static class PhraseHelper
     {
-        public static IEnumerable<string> PermutatePhrase(IEnumerable<IEnumerable<string>> wordCollection, int wordsToUse)
+        public static IEnumerable<string> PermutatePhrase(List<List<string>> wordCollection, int wordsToUse, List<int> skipIndices)
         {
-            var enumerable = wordCollection as IList<IEnumerable<string>> ?? wordCollection.ToList();
-
-            if (!enumerable.Any()) yield return string.Empty;
-
-            for (var index = 0; index < enumerable.Count(); index++)
+            if (skipIndices.Count == wordCollection.Count) yield return string.Empty;
+            
+            for (var index = 0; index < wordCollection.Count(); index++)
             {
+                if (skipIndices.Contains(index)) continue;
                 if (wordsToUse == 1)
                 {
-                    foreach (var word in enumerable[index])
+                    foreach (var word in wordCollection[index])
                     {
                         yield return word;
                     }
+                    continue;
                 }
 
-                var reducedList = new List<IEnumerable<string>>(enumerable);
-                reducedList.RemoveAt(index);
-                foreach (var element in PermutatePhrase(reducedList, wordsToUse - 1))
+                var newSkipIndices = new List<int>(skipIndices);
+                newSkipIndices.Add(index);
+                foreach (var element in PermutatePhrase(wordCollection, wordsToUse - 1, newSkipIndices))
                 {
-                    foreach (var word in enumerable[index])
+                    foreach (var word in wordCollection[index])
                     {
                         yield return string.Concat(word, element);
                     }
@@ -39,25 +40,26 @@ namespace PassListGenerator.Helpers
 
             var permutations = Count(groupCounts, wordsToUse);
 
-            return permutations.Sum();
+            return permutations;
         }
 
-        private static IEnumerable<int> Count(IEnumerable<int> groupCounts, int remaining)
+        private static int Count(IEnumerable<int> groupCounts, int remaining)
         {
             var enumerable = groupCounts as IList<int> ?? groupCounts.ToList();
 
-            if (!enumerable.Any()) yield return 1;
-            if (remaining == 1) yield return enumerable.Sum();
+            if (!enumerable.Any()) return 1;
+            if (remaining == 1) return enumerable.Sum();
+
+            var sum = 0;
 
             for (int index = 0; index < enumerable.Count(); index++)
             {
                 var reducedList = new List<int>(enumerable);
                 reducedList.RemoveAt(index);
-                foreach (var sum in Count(reducedList, remaining - 1))
-                {
-                    yield return enumerable[index]*sum;
-                }
+                sum += enumerable[index] * Count(reducedList, remaining - 1);
             }
+
+            return sum;
         }
     }
 }

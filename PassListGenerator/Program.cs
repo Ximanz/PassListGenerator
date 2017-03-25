@@ -1,4 +1,6 @@
-﻿namespace PassListGenerator
+﻿using System;
+
+namespace PassListGenerator
 {
     class Program
     {
@@ -11,6 +13,7 @@
                 var generator = new PassListGenerator(options);
                 generator.GeneratePasswordList();
             }
+
         }
     }
 }
