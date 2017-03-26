@@ -17,7 +17,21 @@ namespace PassListGeneratorTests.Helpers
 
             Assert.IsNotNull(results);
             Assert.AreEqual(16, results.Count());
+            Assert.IsTrue(results.Contains("test"));
+            Assert.IsTrue(results.Contains("tesT"));
+            Assert.IsTrue(results.Contains("teSt"));
+            Assert.IsTrue(results.Contains("teST"));
+            Assert.IsTrue(results.Contains("tEst"));
+            Assert.IsTrue(results.Contains("tEsT"));
+            Assert.IsTrue(results.Contains("tESt"));
+            Assert.IsTrue(results.Contains("tEST"));
+            Assert.IsTrue(results.Contains("Test"));
+            Assert.IsTrue(results.Contains("TesT"));
             Assert.IsTrue(results.Contains("TeSt"));
+            Assert.IsTrue(results.Contains("TeST"));
+            Assert.IsTrue(results.Contains("TEst"));
+            Assert.IsTrue(results.Contains("TEsT"));
+            Assert.IsTrue(results.Contains("TESt"));
             Assert.IsTrue(results.Contains("TEST"));
         }
 

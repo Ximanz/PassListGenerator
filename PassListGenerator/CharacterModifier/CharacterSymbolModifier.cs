@@ -15,8 +15,7 @@ namespace PassListGenerator.CharacterModifier
         {
             var results = new List<char>();
 
-            if (_characterMap.ContainsKey(char.ToLower(c))) results.AddRange(_characterMap[char.ToLower(c)]);
-            if (_characterMap.ContainsKey(char.ToUpper(c))) results.AddRange(_characterMap[char.ToUpper(c)]);
+            if (_characterMap.ContainsKey(c)) results.AddRange(_characterMap[c]);
 
             return results;
         }

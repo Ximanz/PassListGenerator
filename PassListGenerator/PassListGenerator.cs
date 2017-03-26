@@ -45,14 +45,14 @@ namespace PassListGenerator
             var results = new List<string>();
             var wordList = GenerateWordVariations().ToList();
 
-            var permutationCount = 0;
+            var permutationCount = new Dictionary<int, int>();
             for (var totalElements = _minimum; totalElements <= _maximum; totalElements++)
-                permutationCount += PhraseHelper.CountPermutations(wordList, totalElements);
-            Console.WriteLine($"A total of {permutationCount} permutations will be generated.");
+                permutationCount.Add(totalElements, PhraseHelper.CountPermutations(wordList, totalElements));
+            Console.WriteLine($"A total of {permutationCount.Values.Sum()} permutations will be generated.");
 
             for (var totalElements = _minimum; totalElements <= _maximum; totalElements++)
             {
-                Console.WriteLine($"Generating {totalElements} word permutations...");
+                Console.WriteLine($"Generating {permutationCount[totalElements]} {totalElements} word permutations...");
                 results.AddRange(PhraseHelper.PermutatePhrase(wordList, totalElements, new List<int>()));
             }
 
