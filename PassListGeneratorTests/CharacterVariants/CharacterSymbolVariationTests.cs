@@ -8,18 +8,7 @@ namespace PassListGeneratorTests.CharacterVariants
     public class CharacterSymbolVariationTests
     {
         [TestMethod()]
-        public void GenerateCharacterVariationsTestSingleVarianceUpper()
-        {
-            var modifier = new CharacterSymbolModifier("CharacterMap.json");
-            var results = modifier.GenerateCharacterVariations('E');
-
-            Assert.IsNotNull(results);
-            Assert.AreEqual(1, results.Count);
-            Assert.AreEqual('3', results.FirstOrDefault());
-        }
-
-        [TestMethod()]
-        public void GenerateCharacterVariationsTestSingleVarianceLower()
+        public void GenerateCharacterVariationsTestSingleVariance()
         {
             var modifier = new CharacterSymbolModifier("CharacterMap.json");
             var results = modifier.GenerateCharacterVariations('e');
@@ -27,6 +16,11 @@ namespace PassListGeneratorTests.CharacterVariants
             Assert.IsNotNull(results);
             Assert.AreEqual(1, results.Count);
             Assert.AreEqual('3', results.FirstOrDefault());
+
+            results = modifier.GenerateCharacterVariations('E');
+
+            Assert.IsNotNull(results);
+            Assert.AreEqual(0, results.Count);
         }
 
         [TestMethod()]
