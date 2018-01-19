@@ -1,21 +1,29 @@
-﻿using System;
+﻿using PassListGenerator.Data;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace PassListGenerator.Helpers
 {
-    public static class PhraseHelper
+    public class PhraseHelper
     {
-        public static IEnumerable<string> PermutatePhrase(List<List<string>> wordCollection, int wordsToUse, List<int> skipIndices)
+        private WordBank _wordBank;
+
+        public PhraseHelper(WordBank wordBank)
         {
-            if (skipIndices.Count == wordCollection.Count) yield return string.Empty;
+            _wordBank = wordBank;
+        }
+
+        public IEnumerable<string> PermutatePhrase(int wordsToUse, List<int> skipIndices)
+        {
+            if (skipIndices.Count == _wordBank.Count) yield return string.Empty;
             
-            for (var index = 0; index < wordCollection.Count(); index++)
+            for (var index = 0; index < _wordBank.Count; index++)
             {
                 if (skipIndices.Contains(index)) continue;
                 if (wordsToUse == 1)
                 {
-                    foreach (var word in wordCollection[index])
+                    foreach (string word in _wordBank.Elements[index])
                     {
                         yield return word;
                     }
@@ -24,9 +32,9 @@ namespace PassListGenerator.Helpers
 
                 var newSkipIndices = new List<int>(skipIndices);
                 newSkipIndices.Add(index);
-                foreach (var element in PermutatePhrase(wordCollection, wordsToUse - 1, newSkipIndices))
+                foreach (var element in PermutatePhrase(wordsToUse - 1, newSkipIndices))
                 {
-                    foreach (var word in wordCollection[index])
+                    foreach (var word in _wordBank.Elements[index])
                     {
                         yield return string.Concat(word, element);
                     }
@@ -34,16 +42,16 @@ namespace PassListGenerator.Helpers
             }
         }
 
-        public static int CountPermutations(IEnumerable<IEnumerable<string>> wordCollection, int wordsToUse)
+        public int CountPermutations(int wordsToUse)
         {
-            var groupCounts = from collection in wordCollection select collection.Count();
+            var groupCounts = from collection in _wordBank.Elements select collection.Count();
 
             var permutations = Count(groupCounts, wordsToUse);
 
             return permutations;
         }
 
-        private static int Count(IEnumerable<int> groupCounts, int remaining)
+        private int Count(IEnumerable<int> groupCounts, int remaining)
         {
             var enumerable = groupCounts as IList<int> ?? groupCounts.ToList();
 

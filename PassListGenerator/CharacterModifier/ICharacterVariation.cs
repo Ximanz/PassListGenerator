@@ -2,7 +2,7 @@
 
 namespace PassListGenerator.CharacterModifier
 {
-    public interface ICharacterVariation
+    public interface ICharacterModifier
     {
         List<char> GenerateCharacterVariations(char c);
 

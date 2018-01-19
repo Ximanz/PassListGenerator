@@ -6,7 +6,7 @@ namespace PassListGenerator.Helpers
 {
     public static class WordHelper
     {
-        public static IEnumerable<string> GenerateWordVariations(string word, List<ICharacterVariation> characterModifiers)
+        public static IEnumerable<string> GenerateWordVariations(string word, List<ICharacterModifier> characterModifiers)
         {
             var characterVariantGroups = new List<char>[word.Length];
             var characterVariantCounts = new int[word.Length];
@@ -41,7 +41,7 @@ namespace PassListGenerator.Helpers
             return wordVariants;
         }
 
-        public static int WordVariationsCount(string word, List<ICharacterVariation> characterModifiers)
+        public static int WordVariationsCount(string word, List<ICharacterModifier> characterModifiers)
         {
             var counts = new List<int>();
             foreach (var character in word)

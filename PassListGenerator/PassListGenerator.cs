@@ -4,6 +4,7 @@ using PassListGenerator.Helpers;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using PassListGenerator.Data;
 
 [assembly: InternalsVisibleTo("PassListGeneratorTests")]
 
@@ -43,42 +44,51 @@ namespace PassListGenerator
         public void GeneratePasswordList()
         {
             var results = new List<string>();
-            var wordList = GenerateWordVariations().ToList();
+            var wordBank = new WordBank();
+            GenerateWordVariations(wordBank);
 
+            var phraseHelper = new PhraseHelper(wordBank);
             var permutationCount = new Dictionary<int, int>();
             for (var totalElements = _minimum; totalElements <= _maximum; totalElements++)
-                permutationCount.Add(totalElements, PhraseHelper.CountPermutations(wordList, totalElements));
+                permutationCount.Add(totalElements, phraseHelper.CountPermutations(totalElements));
             Console.WriteLine($"A total of {permutationCount.Values.Sum()} permutations will be generated.");
 
-            for (var totalElements = _minimum; totalElements <= _maximum; totalElements++)
+            var outputFile = $"output-{DateTime.Now.ToFileTime()}.txt";
+            using (System.IO.StreamWriter file = new System.IO.StreamWriter(outputFile))
             {
-                Console.WriteLine($"Generating {permutationCount[totalElements]} {totalElements} word permutations...");
-                results.AddRange(PhraseHelper.PermutatePhrase(wordList, totalElements, new List<int>()));
+                for (var totalElements = _minimum; totalElements <= _maximum; totalElements++)
+                {
+                    Console.WriteLine($"Generating {permutationCount[totalElements]} {totalElements} word permutations...");
+                    //results.AddRange(phraseHelper.PermutatePhrase(totalElements, new List<int>()));
+                    wordBank.MaxElements = totalElements;
+                    foreach (var phrase in wordBank)
+                    {
+                        file.WriteLine(phrase);
+
+                    }
+                }
+                Console.WriteLine($"Results written to {outputFile}");
             }
 
-            Console.WriteLine("Writing results to output.txt");
-            System.IO.File.WriteAllLines("output.txt", results.ToArray());
             Console.WriteLine("All done.");
         }
 
-        private List<List<string>> GenerateWordVariations()
+        private void GenerateWordVariations(WordBank wordBank)
         {
             Console.WriteLine("Generating variations for base words...");
 
-            var expandedWordsCollection = new List<List<string>>();
             var symbolMapProvided = !string.IsNullOrWhiteSpace(_symbolMap);
-            ICharacterVariation symbolModifier = null; 
+            ICharacterModifier symbolModifier = null; 
             if (symbolMapProvided) symbolModifier = new CharacterSymbolModifier(_symbolMap);
             var caseModifier = new CharacterCaseModifier();
 
             foreach (var inputElement in _inputElements)
             {
-                var expandedWordList = new List<string>();
-                expandedWordList.Add(inputElement.Key);
+                WordVariants wordVariants = new WordVariants(inputElement.Key);
 
                 Console.Write($"Word: '{inputElement.Key}'");
 
-                var characterModifiers = new List<ICharacterVariation>();
+                var characterModifiers = new List<ICharacterModifier>();
                 if (symbolMapProvided && inputElement.Value.SymbolVariation)
                 {
                     Console.Write(" + symbol substitution");
@@ -93,14 +103,15 @@ namespace PassListGenerator
                 Console.Write(" ... ");
 
                 if (characterModifiers.Count > 0)
-                    expandedWordList.AddRange(WordHelper.GenerateWordVariations(inputElement.Key, characterModifiers));
+                {
+                    wordVariants.GenerateWordVariations(characterModifiers);
+                }
 
-                Console.WriteLine($"{expandedWordList.Count()} variants");
-                expandedWordsCollection.Add(expandedWordList);
+                Console.WriteLine($"{wordVariants.Count} variants");
+                wordBank.AddWord(wordVariants);
             }
 
             Console.WriteLine();
-            return expandedWordsCollection;
         }
     }
 }

@@ -12,7 +12,7 @@ namespace PassListGeneratorTests.Helpers
         [TestMethod()]
         public void GenerateWordVariationsTestCaseOnly()
         {
-            var modifiers = new List<ICharacterVariation>() { new CharacterCaseModifier() };
+            var modifiers = new List<ICharacterModifier>() { new CharacterCaseModifier() };
             var results = WordHelper.GenerateWordVariations("test", modifiers).ToList();
 
             Assert.IsNotNull(results);
@@ -38,7 +38,7 @@ namespace PassListGeneratorTests.Helpers
         [TestMethod()]
         public void GenerateWordVariationsTestSymbolOnly()
         {
-            var modifiers = new List<ICharacterVariation>() { new CharacterSymbolModifier("CharacterMap.json") };
+            var modifiers = new List<ICharacterModifier>() { new CharacterSymbolModifier("CharacterMap.json") };
             var results = WordHelper.GenerateWordVariations("sample", modifiers).ToList();
 
             Assert.IsNotNull(results);
@@ -54,7 +54,7 @@ namespace PassListGeneratorTests.Helpers
         [TestMethod()]
         public void GenerateWordVariationsTestCombined()
         {
-            var modifiers = new List<ICharacterVariation>() { new CharacterCaseModifier(), new CharacterSymbolModifier("CharacterMap.json") };
+            var modifiers = new List<ICharacterModifier>() { new CharacterCaseModifier(), new CharacterSymbolModifier("CharacterMap.json") };
             var results = WordHelper.GenerateWordVariations("sample", modifiers).ToList();
 
             Assert.IsNotNull(results);
@@ -68,7 +68,7 @@ namespace PassListGeneratorTests.Helpers
         [TestMethod()]
         public void WordVariationsCountTest()
         {
-            var modifiers = new List<ICharacterVariation>() { new CharacterCaseModifier(), new CharacterSymbolModifier("CharacterMap.json") };
+            var modifiers = new List<ICharacterModifier>() { new CharacterCaseModifier(), new CharacterSymbolModifier("CharacterMap.json") };
             var results = WordHelper.WordVariationsCount("sample", modifiers);
 
             Assert.IsNotNull(results);

@@ -2,7 +2,7 @@
 
 namespace PassListGenerator.CharacterModifier
 {
-    public class CharacterSymbolModifier : ICharacterVariation
+    public class CharacterSymbolModifier : ICharacterModifier
     {
         private readonly Dictionary<char, char[]> _characterMap = new Dictionary<char, char[]>();
 
