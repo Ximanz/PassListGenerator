@@ -1,10 +1,9 @@
 ﻿using System;
-using PassListGenerator.CharacterModifier;
-using PassListGenerator.Helpers;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using PassListGenerator.Data;
+using PassListGenerator.CharacterModifier;
 
 [assembly: InternalsVisibleTo("PassListGeneratorTests")]
 
@@ -45,12 +44,11 @@ namespace PassListGenerator
         {
             var results = new List<string>();
             var wordBank = new WordBank();
-            GenerateWordVariations(wordBank);
+            AddWordElements(wordBank);
 
-            var phraseHelper = new PhraseHelper(wordBank);
             var permutationCount = new Dictionary<int, int>();
             for (var totalElements = _minimum; totalElements <= _maximum; totalElements++)
-                permutationCount.Add(totalElements, phraseHelper.CountPermutations(totalElements));
+                permutationCount.Add(totalElements, wordBank.CountPermutations(totalElements));
             Console.WriteLine($"A total of {permutationCount.Values.Sum()} permutations will be generated.");
 
             var outputFile = $"output-{DateTime.Now.ToFileTime()}.txt";
@@ -64,7 +62,6 @@ namespace PassListGenerator
                     foreach (var phrase in wordBank)
                     {
                         file.WriteLine(phrase);
-
                     }
                 }
                 Console.WriteLine($"Results written to {outputFile}");
@@ -73,18 +70,18 @@ namespace PassListGenerator
             Console.WriteLine("All done.");
         }
 
-        private void GenerateWordVariations(WordBank wordBank)
+        private void AddWordElements(WordBank wordBank)
         {
-            Console.WriteLine("Generating variations for base words...");
+            Console.WriteLine("Adding base words...");
 
             var symbolMapProvided = !string.IsNullOrWhiteSpace(_symbolMap);
-            ICharacterModifier symbolModifier = null; 
+            ICharacterModifier symbolModifier = null;
             if (symbolMapProvided) symbolModifier = new CharacterSymbolModifier(_symbolMap);
             var caseModifier = new CharacterCaseModifier();
 
             foreach (var inputElement in _inputElements)
             {
-                WordVariants wordVariants = new WordVariants(inputElement.Key);
+                WordElement wordElement = new WordElement(inputElement.Key);
 
                 Console.Write($"Word: '{inputElement.Key}'");
 
@@ -92,23 +89,18 @@ namespace PassListGenerator
                 if (symbolMapProvided && inputElement.Value.SymbolVariation)
                 {
                     Console.Write(" + symbol substitution");
-                    characterModifiers.Add(symbolModifier);
+                    wordElement.AddCharacterModifier(symbolModifier);
                 }
                 if (inputElement.Value.CaseVariation)
                 {
                     Console.Write(" + case variation");
-                    characterModifiers.Add(caseModifier);
+                    wordElement.AddCharacterModifier(caseModifier);
                 }
 
                 Console.Write(" ... ");
-
-                if (characterModifiers.Count > 0)
-                {
-                    wordVariants.GenerateWordVariations(characterModifiers);
-                }
-
-                Console.WriteLine($"{wordVariants.Count} variants");
-                wordBank.AddWord(wordVariants);
+                wordElement.GenerateCharacterVariations();
+                Console.WriteLine($"{wordElement.Count} variants");
+                wordBank.AddWord(wordElement);
             }
 
             Console.WriteLine();

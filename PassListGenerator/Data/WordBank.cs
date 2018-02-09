@@ -9,8 +9,8 @@ namespace PassListGenerator.Data
 {
     public class WordBank : IEnumerable
     {
-        private List<WordVariants> _elements;
-        public List<WordVariants> Elements => _elements;
+        private List<WordElement> _elements;
+        public List<WordElement> Elements => _elements;
 
         private int _maxElements;
         public int MaxElements
@@ -21,16 +21,16 @@ namespace PassListGenerator.Data
 
         public WordBank()
         {
-            _elements = new List<WordVariants>();
+            _elements = new List<WordElement>();
             _maxElements = 1;
         }
 
-        public void AddWord(WordVariants word)
+        public void AddWord(WordElement word)
         {
             _elements.Add(word);
         }
 
-        public WordVariants GetRootVariants(string root)
+        public WordElement GetRootVariants(string root)
         {
             return _elements.SingleOrDefault(w => w.Root.Equals(root));
         }
@@ -46,6 +46,32 @@ namespace PassListGenerator.Data
         }
 
         public int Count => _elements.Count;
+
+        public int CountPermutations(int wordsToUse)
+        {
+            var groupCounts = (from collection in _elements select collection.Count).ToList();
+
+            return CountPermutations(groupCounts, wordsToUse);
+        }
+
+        private int CountPermutations(IEnumerable<int> groupCounts, int remaining)
+        {
+            var enumerable = groupCounts as IList<int> ?? groupCounts.ToList();
+
+            if (!enumerable.Any()) return 1;
+            if (remaining == 1) return enumerable.Sum();
+
+            var sum = 0;
+
+            for (int index = 0; index < enumerable.Count(); index++)
+            {
+                var reducedList = new List<int>(enumerable);
+                reducedList.RemoveAt(index);
+                sum += enumerable[index] * CountPermutations(reducedList, remaining - 1);
+            }
+
+            return sum;
+        }
     }
 
     public class PhraseEnum : IEnumerator

@@ -53,8 +53,6 @@
   <ItemGroup>
     <Compile Include="CharacterVariants\CharacterCaseVariationTests.cs" />
     <Compile Include="CharacterVariants\CharacterSymbolVariationTests.cs" />
-    <Compile Include="Helpers\PhraseHelperTests.cs" />
-    <Compile Include="Helpers\WordHelperTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UtilityTests.cs" />
   </ItemGroup>
