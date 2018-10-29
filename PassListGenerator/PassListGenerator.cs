@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using PassListGenerator.Data;
 using PassListGenerator.CharacterModifier;
+using PassListGenerator.Logging;
 
 [assembly: InternalsVisibleTo("PassListGeneratorTests")]
 
@@ -46,28 +47,23 @@ namespace PassListGenerator
             var wordBank = new WordBank();
             AddWordElements(wordBank);
 
-            var permutationCount = new Dictionary<int, int>();
+            var permutationCount = new Dictionary<int, long>();
             for (var totalElements = _minimum; totalElements <= _maximum; totalElements++)
                 permutationCount.Add(totalElements, wordBank.CountPermutations(totalElements));
             Console.WriteLine($"A total of {permutationCount.Values.Sum()} permutations will be generated.");
 
-            var outputFile = $"output-{DateTime.Now.ToFileTime()}.txt";
-            using (System.IO.StreamWriter file = new System.IO.StreamWriter(outputFile))
+            using (var logger = new FileLogger())
             {
                 for (var totalElements = _minimum; totalElements <= _maximum; totalElements++)
                 {
                     Console.WriteLine($"Generating {permutationCount[totalElements]} {totalElements} word permutations...");
-                    //results.AddRange(phraseHelper.PermutatePhrase(totalElements, new List<int>()));
                     wordBank.MaxElements = totalElements;
                     foreach (var phrase in wordBank)
                     {
-                        file.WriteLine(phrase);
+                        logger.Log(phrase);
                     }
                 }
-                Console.WriteLine($"Results written to {outputFile}");
             }
-
-            Console.WriteLine("All done.");
         }
 
         private void AddWordElements(WordBank wordBank)

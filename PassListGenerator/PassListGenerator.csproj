@@ -92,6 +92,8 @@
     <Compile Include="CharacterModifier\CharacterCaseModifier.cs" />
     <Compile Include="CharacterModifier\CharacterSymbolModifier.cs" />
     <Compile Include="CharacterModifier\ICharacterVariation.cs" />
+    <Compile Include="Logging\FileLogger.cs" />
+    <Compile Include="Logging\LoggerBase.cs" />
     <Compile Include="Options.cs" />
     <Compile Include="PassListGenerator.cs" />
     <Compile Include="Program.cs" />

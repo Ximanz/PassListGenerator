@@ -32,9 +32,9 @@ namespace PassListGenerator.Data
             _characterModifiers.Add(modifier);
         }
 
-        public int Count => WordVariationsCount();
+        public long Count => WordVariationsCount();
 
-        public string GetVariantAtIndex(int index)
+        public string GetVariantAtIndex(long index)
         {
             if (index >= WordVariationsCount()) throw new System.IndexOutOfRangeException();
 
@@ -102,12 +102,12 @@ namespace PassListGenerator.Data
             }
         }
 
-        internal int WordVariationsCount()
+        internal long WordVariationsCount()
         {
-            var counts = new List<int>();
+            var counts = new List<long>();
             foreach (var character in _root)
             {
-                var count = 1;
+                long count = 1;
                 foreach (var modifier in _characterModifiers)
                 {
                     count += modifier.CharacterVariationCount(character);

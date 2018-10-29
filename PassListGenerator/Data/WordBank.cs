@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace PassListGenerator.Data
 {
-    public class WordBank : IEnumerable
+    public class WordBank : IEnumerable<string>
     {
         private List<WordElement> _elements;
         public List<WordElement> Elements => _elements;
@@ -45,27 +45,32 @@ namespace PassListGenerator.Data
             return (IEnumerator)GetEnumerator();
         }
 
+        IEnumerator<string> IEnumerable<string>.GetEnumerator()
+        {
+            return (IEnumerator<string>)GetEnumerator();
+        }
+
         public int Count => _elements.Count;
 
-        public int CountPermutations(int wordsToUse)
+        public long CountPermutations(int wordsToUse)
         {
             var groupCounts = (from collection in _elements select collection.Count).ToList();
 
             return CountPermutations(groupCounts, wordsToUse);
         }
 
-        private int CountPermutations(IEnumerable<int> groupCounts, int remaining)
+        private long CountPermutations(IEnumerable<long> groupCounts, int remaining)
         {
-            var enumerable = groupCounts as IList<int> ?? groupCounts.ToList();
+            var enumerable = groupCounts as IList<long> ?? groupCounts.ToList();
 
             if (!enumerable.Any()) return 1;
             if (remaining == 1) return enumerable.Sum();
 
-            var sum = 0;
+            long sum = 0;
 
             for (int index = 0; index < enumerable.Count(); index++)
             {
-                var reducedList = new List<int>(enumerable);
+                var reducedList = new List<long>(enumerable);
                 reducedList.RemoveAt(index);
                 sum += enumerable[index] * CountPermutations(reducedList, remaining - 1);
             }
@@ -74,7 +79,7 @@ namespace PassListGenerator.Data
         }
     }
 
-    public class PhraseEnum : IEnumerator
+    public class PhraseEnum : IEnumerator<string>
     {
         WordBank _wordBank;
         List<string> _phrases;
@@ -184,5 +189,7 @@ namespace PassListGenerator.Data
             variantIndex.ForEach(i => i = 0);
             variantIndex[_totalElements - 1] = -1;
         }
+
+        public void Dispose() { }
     }
 }
