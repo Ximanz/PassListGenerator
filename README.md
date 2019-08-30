@@ -31,7 +31,7 @@ So each JSON Name is a word that will be used to generate the password combinati
 * SymbolVariation specifies whether to generate variants of the word by replacing certain characters with other alternatives.
 * CaseVariation specifies whether to generate variants of the word with combinations upper and lower casing.
 
-If CaseVariation is true then a second JSON file must also be specified as an argument, an example of this is also included, which looks like:
+If SymbolVariation is true then a second JSON file must also be specified as an argument, an example of this is also included, which looks like:
 ```
 {
 	"a": ["4", "@"],
